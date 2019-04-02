@@ -7,8 +7,6 @@ def get_character_movies_from_api(character_name)
   response_string = RestClient.get('http://www.swapi.co/api/people/')
   response_hash = JSON.parse(response_string)
 
-  # Create a new array (test_array)
-  #
   test_array = response_hash["results"].find do |character_data|
     character_data["name"] == character_name
   end
@@ -20,7 +18,6 @@ def get_character_movies_from_api(character_name)
   end
   films_arr
 end
-
 
 def print_movies(films)
   films.each_with_index do |film, index|
