@@ -8,9 +8,8 @@ def jsonify_page(page_number)
 end
 
 def find_character(hash_data, character_name)
-  #first page search
-  character_array = hash_data["results"].find do |character_data|
-    #puts "#{character_data["name"]}     #{character_name}"
+  #page search
+  character_hash = hash_data["results"].find do |character_data|
     character_data["name"].downcase == character_name
   end
 end
@@ -25,19 +24,21 @@ def get_films(film_arr)
 end
 
 def get_character_movies_from_api(character_name)
-  #make the web request
   page = 1
-  fail_safe = 10
+  fail_safe = 9
+  #initial search
   characters_hash = find_character(jsonify_page(1),character_name)
-  puts "#{characters_hash}"
+
+  #search next pages && break if not found
   while characters_hash.class != Hash 
     characters_hash = find_character(jsonify_page(page+=1),character_name)
 
     if page > fail_safe
       break
     end
-
   end
+
+  #film finder
   films_arr = get_films(characters_hash)
 end
 
