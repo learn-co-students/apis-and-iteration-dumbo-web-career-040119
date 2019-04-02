@@ -2,21 +2,31 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def get_character_movies_from_api(character_name)
-  #make the web request
+def jsonify
   response_string = RestClient.get('http://www.swapi.co/api/people/')
   response_hash = JSON.parse(response_string)
+end
 
-  test_array = response_hash["results"].find do |character_data|
+def find_character(hash_data, character_name)
+  character_array = hash_data["results"].find do |character_data|
     character_data["name"].downcase == character_name
   end
+end
 
-  films_arr = test_array["films"].map do |film|
+def get_films(film_arr)
+  movie_arr = film_arr["films"].map do |film|
     film_data = RestClient.get("#{film}")
     film_response = JSON.parse(film_data)
     film_response["title"]
   end
-  films_arr
+  movie_arr
+end
+
+def get_character_movies_from_api(character_name)
+  #make the web request
+  characters_arr = find_character(jsonify,character_name)
+  films_arr = get_films(characters_arr)
+  #films_arr
 end
 
 def print_movies(films)
