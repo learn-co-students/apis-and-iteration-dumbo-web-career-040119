@@ -46,7 +46,7 @@ def print_movies(films_hash)
     puts "----"
     counter += 1 # counter = counter + 1
   end
-      puts "May the force be with you!"
+        puts "May the force be with you!"
 end
 
 def show_character_movies(character)
