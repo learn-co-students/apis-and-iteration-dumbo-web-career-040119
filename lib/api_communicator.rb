@@ -2,13 +2,15 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def jsonify
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
+def jsonify_page(page_number)
+  response_string = RestClient.get("http://www.swapi.co/api/people/?page=#{page_number}")
   response_hash = JSON.parse(response_string)
 end
 
 def find_character(hash_data, character_name)
+  #first page search
   character_array = hash_data["results"].find do |character_data|
+    #puts "#{character_data["name"]}     #{character_name}"
     character_data["name"].downcase == character_name
   end
 end
@@ -24,9 +26,19 @@ end
 
 def get_character_movies_from_api(character_name)
   #make the web request
-  characters_arr = find_character(jsonify,character_name)
-  films_arr = get_films(characters_arr)
-  #films_arr
+  page = 1
+  fail_safe = 10
+  characters_hash = find_character(jsonify_page(1),character_name)
+  puts "#{characters_hash}"
+  while characters_hash.class != Hash 
+    characters_hash = find_character(jsonify_page(page+=1),character_name)
+
+    if page > fail_safe
+      break
+    end
+
+  end
+  films_arr = get_films(characters_hash)
 end
 
 def print_movies(films)
