@@ -2,11 +2,43 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def get_character_movies_from_api(character_name)
-  #make the web request
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
-  response_hash = JSON.parse(response_string)
 
+
+def get_character_movies_from_api(character_name)
+  all_character_films = []
+  count = 1
+  response_string = RestClient.get("http://www.swapi.co/api/people/?page=1")
+  response_hash = JSON.parse(response_string)
+  response_hash["results"].select do |info_hash|
+     if info_hash["name"].downcase == character_name
+       film_list = info_hash["films"]
+       film_list.each do |url|
+       film_string = RestClient.get(url)
+          film_response_hash = JSON.parse(film_string)
+         all_character_films << film_response_hash
+       end
+    end
+  end
+  return all_character_films
+end
+
+###### with swapi search hack
+
+# def get_character_movies_from_api(character_name)
+#   all_character_films = []
+#   response_string = RestClient.get("http://www.swapi.co/api/people/?search=#{character_name}")
+#   response_hash = JSON.parse(response_string)
+#   response_hash["results"].each do |info_hash|
+#        film_list = info_hash["films"]
+#        film_list.each do |url|
+#        film_string = RestClient.get(url)
+#           film_response_hash = JSON.parse(film_string)
+#          all_character_films << film_response_hash
+#     end
+#   end
+#   return all_character_films
+# end
+  #exitqbinding.pry
   # iterate over the response hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
@@ -16,18 +48,21 @@ def get_character_movies_from_api(character_name)
   # this collection will be the argument given to `print_movies`
   #  and that method will do some nice presentation stuff like puts out a list
   #  of movies by title. Have a play around with the puts with other info about a given film.
-end
+
 
 def print_movies(films)
+  films.each do |movie_info|
+    puts movie_info["title"]
+  end
   # some iteration magic and puts out the movies in a nice list
 end
 
 def show_character_movies(character)
   films = get_character_movies_from_api(character)
+  #binding.pry
   print_movies(films)
 end
 
 ## BONUS
-
 # that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
 # can you split it up into helper methods?
