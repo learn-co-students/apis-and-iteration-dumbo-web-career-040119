@@ -34,6 +34,7 @@ end
 def print_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
   counter = 1
+    puts "Oh, right. Here you can see this fellow:"
   films_hash.each do |film|
     puts " "
     puts "#{counter}. #{film['title']}"
