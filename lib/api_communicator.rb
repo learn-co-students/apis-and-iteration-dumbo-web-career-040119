@@ -8,7 +8,7 @@ def get_character_movies_from_api(character_name)
   response_hash = JSON.parse(response_string)
 
   test_array = response_hash["results"].find do |character_data|
-    character_data["name"] == character_name
+    character_data["name"].downcase == character_name
   end
 
   films_arr = test_array["films"].map do |film|
