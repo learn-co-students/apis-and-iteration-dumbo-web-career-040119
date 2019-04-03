@@ -13,10 +13,13 @@ def list_of_films(character_hash)
   end
 end
 
+
 def get_character_movies_from_api(character_name)
+
   counter = 1
   characters = get_characters("http://www.swapi.co/api/people/?page=#{counter}")
-  while characters
+
+    while characters
     characters["results"].each do |character_hash|
       if character_hash["name"].downcase == character_name
         return list_of_films(character_hash)
